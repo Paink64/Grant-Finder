@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+python-dotenv
+requests
+scrapy
+streamlit
+beautifulsoup4
+unicodedata2
+langchain
+langchain_groq
+langchain_community
+sentence-transformers
+faiss-cpu
