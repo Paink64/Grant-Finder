@@ -4,6 +4,7 @@ from browser_use.browser.browser import Browser, BrowserConfig
 from pydantic import SecretStr
 from browser_use.browser.context import BrowserContext
 
+import pyperclip
 import os
 from dotenv import load_dotenv
 import asyncio
@@ -53,7 +54,7 @@ async def get_sheet_contents(browser: BrowserContext):
 		return ActionResult(error='Current page is not a Google Sheet')
 
 	# select all cells
-	await page.keyboard.press('Enter')
+	await page.keyboard.press('\n')
 	await page.keyboard.press('Escape')
 	await page.keyboard.press('ControlOrMeta+A')
 	await page.keyboard.press('ControlOrMeta+C')
@@ -68,7 +69,7 @@ async def select_cell_or_range(browser: BrowserContext, cell_or_range: str):
 	if not is_google_sheet(page):
 		return ActionResult(error='Current page is not a Google Sheet')
 
-	await page.keyboard.press('Enter')  # make sure we dont delete current cell contents if we were last editing
+	await page.keyboard.press('\n')  # make sure we dont delete current cell contents if we were last editing
 	await page.keyboard.press('Escape')  # to clear current focus (otherwise select range popup is additive)
 	await asyncio.sleep(0.1)
 	await page.keyboard.press('Home')  # move cursor to the top left of the sheet first
@@ -78,7 +79,7 @@ async def select_cell_or_range(browser: BrowserContext, cell_or_range: str):
 	await asyncio.sleep(0.2)
 	await page.keyboard.type(cell_or_range, delay=0.05)
 	await asyncio.sleep(0.2)
-	await page.keyboard.press('Enter')
+	await page.keyboard.press('\n')
 	await asyncio.sleep(0.2)
 	await page.keyboard.press('Escape')  # to make sure the popup still closes in the case where the jump failed
 	return ActionResult(extracted_content=f'Selected cell {cell_or_range}', include_in_memory=False)
@@ -115,7 +116,7 @@ async def input_selected_cell_text(browser: BrowserContext, text: str):
 		return ActionResult(error='Current page is not a Google Sheet')
 
 	await page.keyboard.type(text, delay=0.1)
-	await page.keyboard.press('Enter')  # make sure to commit the input so it doesnt get overwritten by the next action
+	await page.keyboard.press('\n')  # make sure to commit the input so it doesnt get overwritten by the next action
 	await page.keyboard.press('ArrowUp')
 	return ActionResult(extracted_content=f'Inputted text {text}', include_in_memory=False)
 
@@ -163,7 +164,7 @@ initial_actions = [
 async def main():
     agent = Agent(
         task="""In this database look for a grant that has to do with AI. Look through the grants and see which pay the most, Open https://docs.google.com/spreadsheets/
-            Add on the first more rows 3column headers are present and all existing values in the sheet are formatted correctly.
+            Add on the first more rows 4 column headers are present and all existing values in the sheet are formatted correctly.
 				Columns:
 					A: ID
 					B: Link
